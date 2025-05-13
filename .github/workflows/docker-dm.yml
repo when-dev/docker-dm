@@ -1,4 +1,4 @@
-name: CI & Deploy
+name: docker-dm & CI
 
 on:
   push:
