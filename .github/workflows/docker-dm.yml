@@ -7,6 +7,7 @@ on:
 jobs:
   build-test-deploy:
     runs-on: self-hosted
+
     services:
       postgres:
         image: postgres:14
@@ -37,29 +38,29 @@ jobs:
         run: psql postgresql://kubsu:kubsu@localhost:5432/kubsu -f kubsu/dump.sql
 
       - name: Build Docker image
-        run: docker build -t myapp:test .
+        run: docker build -t myapp:latest .
 
-      - name: Build test image
+      - name: Build test image (builder stage)
         run: docker build --target builder -t myapp:test .
 
-      - name: Run tests
+      - name: Run tests inside builder container
         run: |
           docker run --rm \
             --network host \
             -e PYTHONPATH=/app \
+            -e DATABASE_URL=postgresql+psycopg://kubsu:kubsu@localhost:5432/kubsu \
             myapp:test \
             pytest tests
 
-
-      - name: Build prod image
+      - name: Rebuild production image
         run: docker build -t myapp:latest .
 
-      - name: Set up SSH
+      - name: Set up SSH for deploy
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to remote server
+      - name: Deploy to remote server via podman
         run: |
           docker save myapp:latest | \
             ssh -o StrictHostKeyChecking=no \
@@ -73,4 +74,3 @@ jobs:
                --network host \
                myapp:latest \
                uvicorn src.main:app --host 0.0.0.0 --port 8096"
-
