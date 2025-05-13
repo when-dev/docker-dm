@@ -61,7 +61,7 @@ jobs:
 
       - name: Deploy to remote server
         run: |
-          podman save myapp:latest | \
+          docker save myapp:latest | \
             ssh -o StrictHostKeyChecking=no \
                 -p ${{ secrets.SSH_PORT }} \
                 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
