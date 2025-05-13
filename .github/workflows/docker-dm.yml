@@ -37,14 +37,14 @@ jobs:
         run: psql postgresql://kubsu:kubsu@localhost:5432/kubsu -f kubsu/dump.sql
 
       - name: Build Docker image
-        run: docker build -t myapp:test .
+        run: podman build -t myapp:test .
 
       - name: Build test image
-        run: docker build --target builder -t myapp:test .
+        run: podman build --target builder -t myapp:test .
 
       - name: Run tests
         run: |
-          docker run --rm \
+          podman run --rm \
             --network host \
             -e PYTHONPATH=/app \
             myapp:test \
