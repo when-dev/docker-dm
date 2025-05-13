@@ -61,14 +61,14 @@ jobs:
 
       - name: Deploy to remote server
         run: |
-          docker save myapp:latest | \
+          podman save myapp:latest | \
             ssh -o StrictHostKeyChecking=no \
                 -p ${{ secrets.SSH_PORT }} \
                 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "docker load && \
-             docker stop myapp || true && \
-             docker rm myapp || true && \
-             docker run -d \
+            "podman load && \
+             podman stop myapp || true && \
+             podman rm myapp || true && \
+             podman run -d \
                --name myapp \
                --network host \
                myapp:latest \
