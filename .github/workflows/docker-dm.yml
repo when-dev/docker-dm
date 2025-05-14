@@ -66,9 +66,9 @@ jobs:
                 -p ${{ secrets.SSH_PORT }} \
                 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             "podman load && \
-             (podman container stop myapp || true) && \
-             (podman container rm myapp || true) && \
-             (podman image rm -f myapp:latest || true) && \
+             (podman container exists myapp && podman container stop myapp && podman container rm myapp || true) && \
+             (podman image exists myapp:latest && podman image rm -f myapp:latest || true) && \
+             (podman image exists localhost/myapp:latest && podman image rm -f localhost/myapp:latest || true) && \
              podman tag localhost/myapp:latest myapp:latest && \
              podman run -d \
                --name myapp \
