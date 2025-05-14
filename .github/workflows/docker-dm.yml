@@ -69,6 +69,7 @@ jobs:
              podman container stop myapp || true && \
              podman container rm myapp || true && \
              podman image rm myapp:latest || true && \
+             podman image rm localhost/myapp:latest || true && \
              podman tag localhost/myapp:latest myapp:latest && \
              podman run -d \
                --name myapp \
