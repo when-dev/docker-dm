@@ -67,6 +67,8 @@ jobs:
                 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             "podman load && \
              podman tag myapp:latest myapp:latest && \
+             (podman stop myapp || true) && \
+             (podman rm myapp || true) && \
              podman run -d \
                --name myapp \
                --network host \
